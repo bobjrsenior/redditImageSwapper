@@ -14,8 +14,10 @@ r.set_oauth_app_info(client_id=input('Client ID: '),
                                    'authorize_callback')
 #Set permissions
 url = r.get_authorize_url('uniqueKey', 'modconfig', True)
-#Open URL to prompt for access
-webbrowser.open(url)
+#Prompt user to grant access and get access code
+print('Open the following url in a browser to authorize')
+print(url)
+print('After authorization copy the code at the end of the new url')
 #Code from url after authorization
 access_information = r.get_access_information(input('Access Code (In URL): '))
 
