@@ -4,10 +4,22 @@ import random
 import praw
 import re
 import getpass
-
+import webbrowser
 user_agent = ("Header Image Swappexr v0.1.0 by /u/bobjrsenior") #Let reddit know who you are
 r = praw.Reddit(user_agent=user_agent)
-r.login(input('Username: '), getpass.getpass()) #Input username, pass here
+#Get the App information
+r.set_oauth_app_info(client_id=input('Client ID: '),
+                      client_secret=getpass.getpass(),
+                      redirect_uri='http://127.0.0.1:65010/'
+                                   'authorize_callback')
+#Set permissions
+url = r.get_authorize_url('uniqueKey', 'modconfig', True)
+#Open URL to prompt for access
+webbrowser.open(url)
+#Code from url after authorization
+access_information = r.get_access_information(input('Access Code (In URL): '))
+
+#r.login(input('Username: '), getpass.getpass()) #Input username, pass here
 r.config.decode_html_entities = True
 subredditName = input('Subreddit Name: ') #Name of the subreddit
 subreddit = r.get_subreddit(subredditName)  #get the subreddit
@@ -42,3 +54,4 @@ while True: #Infinite Loop since it is a bot
     pprint(cycles)
     #Sleep until we need to update again
     time.sleep(timeDelay)
+    r.refresh_access_information(access_information['refresh_token'])
