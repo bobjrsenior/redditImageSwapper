@@ -12,18 +12,23 @@ def timeTil(): #Returns a formatted length until the event
      minutes = int(td.seconds / 60) - (hours * 60) 
      return keyword + ': ' + str(days) + 'd:' + str(hours) + 'h:' + str(minutes) + 'm' + endKeyword
 
-user_agent = ("Header Image Swapper v0.0.1 by /u/bobjrsenior") #Let reddit know who you are
+user_agent = ("Header Image Swappexr v0.0.1 by /u/bobjrsenior") #Let reddit know who you are
 r = praw.Reddit(user_agent=user_agent)
 r.login(input('Username: '), getpass.getpass()) #Input username, pass here
+r.config.decode_html_entities = True
 subredditName = input('Subreddit Name: ') #Name of the subreddit
 subreddit = r.get_subreddit(subredditName)  #get the subreddit
 updateSpeed = 60 #Update the timer every _ seconds
+stylesheet = subreddit.get_stylesheet()['stylesheet']
+pprint(stylesheet)
+time.sleep(1800)
 
 #get inputs for dates and such
 keyword = input('Keyword in sidebar to find: ')
 endKeyword = input('Keyword that marks the end of the countdown (\\n if new line): ')
 images = []
-while (imageNameTemp = input('Image Name (q for done): ')) != 'q':
+imageNameTemp = input('Image Name (q for done): ')
+while (imageNameTemp != 'q'):
     images += imageNameTemp
 
 while True: #Infinite Loop since it is a bot
