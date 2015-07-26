@@ -5,7 +5,7 @@ import praw
 import re
 import getpass
 import webbrowser
-user_agent = ("Header Image Swappexr v0.1.0 by /u/bobjrsenior") #Let reddit know who you are
+user_agent = ("Header Image Swappexr v0.2.1 by /u/bobjrsenior") #Let reddit know who you are
 r = praw.Reddit(user_agent=user_agent)
 #Get the App information
 r.set_oauth_app_info(client_id=input('Client ID: '),
@@ -37,12 +37,14 @@ endKeywordSan = re.sub('\*', '\*', endKeyword)
 
 #get the images in the cycle
 images = []
+curImage = 0
+print('Order image names by time of day\nstarting with what the current image would be')
 imageNameTemp = input('Image Name (q for done): ')
 while (imageNameTemp != 'q'):
     images.append(imageNameTemp)
     imageNameTemp = input('Image Name (q for done): ')
 
-#get the delat between image changes
+#get the delay between image changes
 timeDelay = int(input('Time between images (minutes): '))
 timeDelay *= 60
 cycles = 0
@@ -50,10 +52,14 @@ while True: #Infinite Loop since it is a bot
     cycles += 1
     settings = r.get_settings(subredditName) #Get the subreddits settings
     #Update the local css with a new image
-    stylesheet = re.sub(startKeywordSan + '.*' + endKeywordSan, startKeyword + 'background:url(%%' + images[random.randint(0, len(images) - 1)] + '%%) no-repeat top left;'+ endKeyword, stylesheet, 1)
+    stylesheet = re.sub(startKeywordSan + '.*' + endKeywordSan, startKeyword + 'background:url(%%' + images[curImage] + '%%) no-repeat top left;'+ endKeyword, stylesheet, 1)
     #Update the sub's css
     subreddit.set_stylesheet(stylesheet)
     pprint(cycles)
+    #Cycle to the next image
+    curImage += 1
+    if curImage == len(images):
+        curImage = 0
     #Sleep until we need to update again
     time.sleep(timeDelay)
     r.refresh_access_information(access_information['refresh_token'])
